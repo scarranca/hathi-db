@@ -5,7 +5,7 @@
     "nixpacksConfigPath": "nixpacks.toml"
   },
   "deploy": {
-    "startCommand": "yarn db:migrate && yarn start",
+    "startCommand": "if [ \"$USE_DB\" = \"postgres\" ]; then yarn db:migrate; fi && yarn start",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
   }
