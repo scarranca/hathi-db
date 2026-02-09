@@ -1,0 +1,117 @@
+yarn run v1.22.22
+$ next dev --turbopack --port 3008
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /Users/santiagocarranca/package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * /Users/santiagocarranca/hathi-db/yarn.lock
+
+   ▲ Next.js 15.5.12 (Turbopack)
+   - Local:        http://localhost:3008
+   - Network:      http://192.168.1.68:3008
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 740ms
+ ○ Compiling /journal/[[...keyContext]] ...
+ ✓ Compiled /journal/[[...keyContext]] in 2.2s
+🔧 Using SQLite database
+redux-persist failed to create sync storage. falling back to noop storage.
+🔧 Using SQLite database
+ GET /journal/9-february-2026 200 in 2793ms
+✅ sqlite-vec extension loaded successfully
+✓ SQLite database connected at: /Users/santiagocarranca/hathi-db/data/hathi.db
+[PERF] fetchNotes took 12.9 ms
+[PERF] fetchNotes took 13.01 ms
+ POST /journal/9-february-2026 200 in 74ms
+[PERF] fetchNotes took 0.33 ms
+[PERF] fetchNotes took 0.39 ms
+ POST /journal/9-february-2026 200 in 41ms
+ ✓ Compiled /api/preferences in 162ms
+🔧 Using SQLite database
+ GET /api/preferences 200 in 401ms
+ GET /api/preferences 200 in 230ms
+ GET /journal/9-february-2026 200 in 64ms
+[PERF] fetchNotes took 0.32 ms
+[PERF] fetchNotes took 2.47 ms
+ POST /journal/9-february-2026 200 in 48ms
+[PERF] fetchNotes took 0.39 ms
+[PERF] fetchNotes took 0.46 ms
+ POST /journal/9-february-2026 200 in 25ms
+ ✓ Compiled /favicon.ico in 73ms
+🔧 Using SQLite database
+ GET /api/preferences 200 in 232ms
+ GET /favicon.ico?favicon.3b859689.ico 200 in 297ms
+ GET /api/preferences 200 in 222ms
+[PERF] searchContexts took 1.45 ms
+[PERF] searchContexts took 1.59 ms
+ POST /journal/9-february-2026 200 in 58ms
+🔧 Using SQLite database
+[PERF] searchContexts took 0.15 ms
+[PERF] searchContexts took 0.21 ms
+ POST /journal/9-february-2026 200 in 54ms
+🔧 Using SQLite database
+[PERF] createNote took 4.54 ms
+[PERF] addNote took 4.8 ms
+ POST /journal/9-february-2026 200 in 59ms
+🔧 Using Google for text generation
+🔧 Using SQLite database
+Context suggestions: {
+  count: 4,
+  suggestions: [ 'Team Update', 'Netsuite', 'Supabase', 'Stripe' ]
+}
+[PERF] suggestContexts took 16472.23 ms
+ POST /journal/9-february-2026 200 in 16500ms
+🔧 Using Hugging Face Local Embedding Service
+🤖 Loading embedding model: intfloat/multilingual-e5-base
+🔧 Using SQLite database
+✅ Successfully loaded embedding model: intfloat/multilingual-e5-base
+🔄 Generating embedding for: "passage: [[Team update]] 9 de febrero 2026 :
+Bueno..."
+📏 Generated embedding with 768 dimensions (expected: 768)
+[PERF] generateDocumentEmbedding took 1486.75 ms
+ POST /journal/9-february-2026 200 in 1532ms
+🔧 Using SQLite database
+[PERF] structurizeNote took 22222.84 ms
+ POST /journal/9-february-2026 200 in 22253ms
+[PERF] updateNote took 3.38 ms
+[PERF] patchNote took 3.53 ms
+ POST /journal/9-february-2026 200 in 50ms
+[PERF] updateNote took 1.12 ms
+[PERF] patchNote took 1.16 ms
+ POST /journal/9-february-2026 200 in 25ms
+[PERF] upsertEmbedding took 1.3 ms
+[PERF] updateNote took 1.93 ms
+[PERF] patchNote took 1.95 ms
+ POST /journal/9-february-2026 200 in 23ms
+🔄 Generating embedding for: "passage: [[Team update]] 9 de febrero 2026 :
+Bueno..."
+📏 Generated embedding with 768 dimensions (expected: 768)
+[PERF] generateDocumentEmbedding took 97.47 ms
+ POST /journal/9-february-2026 200 in 117ms
+[PERF] upsertEmbedding took 0.26 ms
+[PERF] updateNote took 0.75 ms
+[PERF] patchNote took 0.77 ms
+ POST /journal/9-february-2026 200 in 22ms
+🔧 Using SQLite database
+🔧 Using SQLite database
+ GET /journal/9-february-2026 200 in 150ms
+ GET /journal/9-february-2026 200 in 41ms
+🔧 Using SQLite database
+🔧 Using SQLite database
+ GET /journal/9-february-2026 200 in 116ms
+ GET /journal/9-february-2026 200 in 39ms
+🔧 Using SQLite database
+🔧 Using SQLite database
+ GET /journal/9-february-2026 200 in 102ms
+ GET /journal/9-february-2026 200 in 24ms
+🔧 Using SQLite database
+🔧 Using SQLite database
+ GET /journal/9-february-2026 200 in 120ms
+ GET /journal/9-february-2026 200 in 26ms
+🔧 Using SQLite database
+🔧 Using SQLite database
+ GET /journal/9-february-2026 200 in 140ms
+ GET /journal/9-february-2026 200 in 61ms
+🔧 Using SQLite database

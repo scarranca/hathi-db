@@ -90,11 +90,21 @@ export class SqliteAdapter implements DatabaseAdapter {
             contextsList = await this.fetchContextsForNote(db, dbNote.id);
         }
 
-        // Parse JSON fields that were serialized
-        const tags = dbNote.tags ? JSON.parse(dbNote.tags) : [];
-        const suggestedContexts = dbNote.suggested_contexts
-            ? JSON.parse(dbNote.suggested_contexts)
-            : undefined;
+        // Parse JSON fields that were serialized (safe parsing to avoid crashes on malformed data)
+        let tags: string[] = [];
+        let suggestedContexts: string[] | undefined;
+        try {
+            tags = dbNote.tags ? JSON.parse(dbNote.tags) : [];
+        } catch {
+            tags = [];
+        }
+        try {
+            suggestedContexts = dbNote.suggested_contexts
+                ? JSON.parse(dbNote.suggested_contexts)
+                : undefined;
+        } catch {
+            suggestedContexts = undefined;
+        }
 
         return {
             ...dbNote,
@@ -132,11 +142,21 @@ export class SqliteAdapter implements DatabaseAdapter {
             contextsList = await this.fetchContextsForNote(db, dbNote.id);
         }
 
-        // Parse JSON fields that were serialized
-        const tags = dbNote.tags ? JSON.parse(dbNote.tags) : undefined;
-        const suggestedContexts = dbNote.suggested_contexts
-            ? JSON.parse(dbNote.suggested_contexts)
-            : undefined;
+        // Parse JSON fields that were serialized (safe parsing to avoid crashes on malformed data)
+        let tags: string[] | undefined;
+        let suggestedContexts: string[] | undefined;
+        try {
+            tags = dbNote.tags ? JSON.parse(dbNote.tags) : undefined;
+        } catch {
+            tags = undefined;
+        }
+        try {
+            suggestedContexts = dbNote.suggested_contexts
+                ? JSON.parse(dbNote.suggested_contexts)
+                : undefined;
+        } catch {
+            suggestedContexts = undefined;
+        }
 
         return {
             ...dbNote,
@@ -251,10 +271,10 @@ export class SqliteAdapter implements DatabaseAdapter {
 
         if (filters.hashtags && filters.hashtags.length > 0) {
             // For SQLite, we need to check JSON content for tags
+            // Use parameterized LIKE with concat to avoid SQL injection
             const tagConditions = filters.hashtags.map(
                 (tag) =>
-                    sql`json_extract(${notes.tags}, '$') LIKE ${'%"' + tag + '"%'
-                        }`
+                    sql`json_extract(${notes.tags}, '$') LIKE '%"' || ${tag} || '"%'`
             );
             conditions.push(or(...tagConditions)!);
         }
@@ -657,8 +677,6 @@ export class SqliteAdapter implements DatabaseAdapter {
      */
     async filterNotes(filters: NotesFilter = {}): Promise<FilterNotesResult> {
         return measureExecutionTime("filterNotes", async () => {
-            console.log("Filtering notes with filters:", filters);
-
             const db = createSqliteDb();
 
             try {
@@ -833,16 +851,20 @@ export class SqliteAdapter implements DatabaseAdapter {
                 // Calculate cosine similarity in memory
                 const similarities = allEmbeddings
                     .map((row: any) => {
-                        const storedEmbedding = JSON.parse(row.embedding);
-                        const similarity = this.calculateCosineSimilarity(
-                            embedding,
-                            storedEmbedding
-                        );
-                        return {
-                            id: row.id,
-                            similarity: similarity,
-                            distance: 1 - similarity, // Convert similarity to distance
-                        };
+                        try {
+                            const storedEmbedding = JSON.parse(row.embedding);
+                            const similarity = this.calculateCosineSimilarity(
+                                embedding,
+                                storedEmbedding
+                            );
+                            return {
+                                id: row.id,
+                                similarity: similarity,
+                                distance: 1 - similarity, // Convert similarity to distance
+                            };
+                        } catch {
+                            return { id: row.id, similarity: 0, distance: 1 };
+                        }
                     })
                     .filter((item) => item.similarity >= similarityThreshold)
                     .sort((a, b) => b.similarity - a.similarity) // Sort by similarity descending
@@ -884,16 +906,19 @@ export class SqliteAdapter implements DatabaseAdapter {
                         noteData.id
                     );
 
+                    let parsedTags: string[] | null = null;
+                    let parsedSuggested: string[] | null = null;
+                    try { parsedTags = noteData.tags ? JSON.parse(noteData.tags) : null; } catch { /* ignore */ }
+                    try { parsedSuggested = noteData.suggested_contexts ? JSON.parse(noteData.suggested_contexts) : null; } catch { /* ignore */ }
+
                     rawResults.push({
                         id: noteData.id,
                         content: noteData.content,
                         key_context: noteData.key_context,
                         contexts: contexts,
-                        tags: noteData.tags ? JSON.parse(noteData.tags) : null,
+                        tags: parsedTags,
                         note_type: noteData.note_type,
-                        suggested_contexts: noteData.suggested_contexts
-                            ? JSON.parse(noteData.suggested_contexts)
-                            : null,
+                        suggested_contexts: parsedSuggested,
                         created_at: new Date(noteData.created_at),
                         updated_at: new Date(noteData.updated_at),
                         similarity: similarityData?.similarity || 0,
@@ -1124,9 +1149,7 @@ export class SqliteAdapter implements DatabaseAdapter {
                     })
                     .where(eq(notes.id, noteId));
 
-                console.log(
-                    `✅ Successfully stored embedding for note ${noteId} (${embedding.length} dimensions)`
-                );
+                // Embedding stored successfully
             } catch (error) {
                 console.error("Error upserting embedding:", error);
                 throw new Error(

@@ -116,7 +116,6 @@ export async function POST(request: Request) {
         // Reset AI service singleton to use new config
         resetAIService();
 
-        console.log("✅ AI configuration updated successfully");
         return NextResponse.json({ success: true });
     } catch (error) {
         console.error("Error saving AI config:", error);

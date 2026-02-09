@@ -14,15 +14,10 @@ export async function POST(req: Request) {
             await req.json();
         // const { messages, id } = await req.json();
 
-        console.log("Received messages:", messages?.length);
-        console.log("Chat ID:", id);
-
         // Get AI service and config asynchronously
         const aiService = await getAiService();
         const aiConfig = await getAiConfig();
         const model = aiService.getLanguageModel(aiConfig.agentModel.model);
-
-        console.log("API Key present:", !!aiConfig.provider.apiKey);
 
         // Create comprehensive logger for this chat session
         const logger = createChatLogger(id);
@@ -60,8 +55,6 @@ export async function POST(req: Request) {
         return new Response(
             JSON.stringify({
                 error: "An error occurred while processing your request",
-                details:
-                    error instanceof Error ? error.message : "Unknown error",
             }),
             {
                 status: 500,
